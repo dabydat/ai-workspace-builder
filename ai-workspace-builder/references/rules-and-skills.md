@@ -58,35 +58,72 @@ Must include 7 rules:
 
 ---
 
-## SKILLS (loaded on demand, not always in context)
+## SKILLS (directory format: `skills/<name>/SKILL.md`)
 
-### skills/design-patterns.md
+Skills use directory format for auto-discovery. Each skill lives in `skills/<name>/SKILL.md`.
+Supporting files (examples, templates) go in the same directory as reference material.
+
+### Skill Frontmatter Fields (11 available)
+```yaml
+---
+name: skill-name                    # Required: kebab-case identifier
+description: "Activates when..."    # Required: trigger-oriented description
+effort: high                        # Optional: low|medium|high — thinking depth
+context: fork                       # Optional: "fork" runs in isolated subagent context
+agent: general-purpose              # Optional: which agent type runs this skill
+user-invocable: false               # Optional: false = preloaded into agents, not user-callable
+allowed-tools: Read, Grep, Glob     # Optional: restrict which tools the skill can use
+disable-model-invocation: true      # Optional: prevents Claude from auto-invoking this skill
+model: haiku                        # Optional: model override
+argument-hint: "[file-path]"        # Optional: hint for arguments
+hooks: {}                           # Optional: skill-specific hooks
+---
+```
+
+**Description best practice:** Write as trigger ("Activates when..."), not imperative ("Run when...").
+This helps Claude's auto-invocation resolution: Skill (inline) > Agent (separate context) > Command (never auto-invoked).
+
+### Two Skill Patterns
+1. **Agent Skills** (`user-invocable: false`) — Preloaded via `skills:` field in agent frontmatter. Full SKILL.md content injected at agent startup. Used for reference knowledge (design-patterns, code-quality, refactoring-techniques).
+2. **Invocable Skills** — Called via Skill tool or `/slash-command`. Used for actions (brainstorm, code-review, deploy).
+
+### skills/design-patterns/SKILL.md
 Source: https://refactoring.guru/design-patterns/catalog
+`user-invocable: false` — preloaded into architect agent
 Must include: all 22 GoF patterns in 3 tables (Creational, Structural, Behavioral)
 Each row: Pattern | Use when... | Real example | URL
 Plus: quick decision tree (text format matching diagrams/decision-tree.mermaid)
 
-### skills/refactoring-techniques.md
+### skills/refactoring-techniques/SKILL.md
 Source: https://refactoring.guru/refactoring/smells
+`user-invocable: false` — preloaded into backend-dev and frontend-dev agents
 Must include: smell → signal → cure → URL for each of the 5 smell categories
 
-### skills/code-quality.md
+### skills/code-quality/SKILL.md
+`user-invocable: false` — preloaded into qa-engineer agent
 10 universal rules + pre-delivery checklist (checkbox format)
 
-### skills/brainstorm.md, plan.md, code-review.md, run-tests.md, deploy.md
+### skills/brainstorm/SKILL.md (`effort: high`, `context: fork`, `agent: general-purpose`)
+### skills/plan/SKILL.md (`effort: high`)
+### skills/code-review/SKILL.md (`allowed-tools: Read, Grep, Glob`)
+### skills/run-tests/SKILL.md (`allowed-tools: Bash(npm test *), Bash(npx vitest *), Read`)
+### skills/deploy/SKILL.md (`disable-model-invocation: true`, `argument-hint: [staging|production]`)
 These are SLASH COMMAND SKILLS — they define the output format for their respective commands.
-Each has frontmatter (name, description) and a structured output template.
+Each has frontmatter (name, description, + fields above) and a structured output template.
 
-### skills/aitmpl-catalog.md
+### skills/aitmpl-catalog/SKILL.md
+`user-invocable: false`
 Reference to https://www.aitmpl.com/ with categories (Skills, Agents, Commands, MCPs, Settings, Hooks)
 and install command: `npx claude-code-templates@latest`
 
-### skills/prompt-engineering.md
+### skills/prompt-engineering/SKILL.md
+`user-invocable: false`
 Source: platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
 Principles: be clear, use XML tags, give examples, specify format, role + context + task
 Anti-patterns table: vague vs specific prompts with token savings
 
-### skills/token-optimization.md
+### skills/token-optimization/SKILL.md
+`user-invocable: false`
 Source: support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work
 7 rules: never repeat, diagrams > text, short prompts, update STATE always, one task per prompt,
 new conversation at 70%, explicit output format

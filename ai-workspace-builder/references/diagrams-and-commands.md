@@ -62,18 +62,26 @@ Purpose: /start → Read STATE → Work → /end → Save STATE → Next session
 ```markdown
 ---
 name: [command-name]
-description: "[what it does]. Usage: /command-name [args]"
+description: "[what it does]"
+model: haiku                        # Optional: use cheaper model for simple commands
+disable-model-invocation: true      # Optional: prevents auto-invocation (manual only)
+argument-hint: "[spec-name]"        # Optional: hint for expected arguments
 ---
 [Numbered steps Claude follows when this command is invoked]
 [Reference to files Claude must read]
 [Output format]
 ```
 
+### Command Frontmatter Best Practices
+- `model: haiku` on lightweight commands (start, end) — saves tokens/cost
+- `disable-model-invocation: true` on commands that should only run manually (implement, deploy)
+- `argument-hint` on commands that take arguments — shown in autocomplete
+
 ### Command Catalog
 
 **Session management:**
-- `/start` — Read STATE.md + last CHANGELOG entry. Output 5 lines. Don't read anything else.
-- `/end` — Update STATE.md + CHANGELOG.md + DECISIONS.md. Output 2 lines.
+- `/start` (`model: haiku`) — Read STATE.md + last CHANGELOG entry. Output 5 lines. Don't read anything else.
+- `/end` (`model: haiku`) — Update STATE.md + CHANGELOG.md + DECISIONS.md. Output 2 lines.
 
 **Agent activation:**
 - `/activate [agent]` — Read STATE.md + agents/[name].md + relevant rules. Follow that agent's checklist.

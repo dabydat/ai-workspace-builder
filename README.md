@@ -15,20 +15,25 @@
 
 You say: **"Configure my workspace for TypeScript + Next.js + Supabase"**
 
-The skill generates **65 files** that turn Claude into a self-managing development team:
+The skill generates **68+ files** that turn Claude into a self-managing development team:
 
-- **13 agents** — Orchestrator, Architect, Backend, Frontend, QA, DevOps, Product Manager, Project Manager, UX Designer, Growth Marketer, Content Strategist, Business Analyst, DX Engineer
+- **13 agents** — With full frontmatter: maxTurns, color, memory, skills preloading, permissionMode
 - **6 rules** — Coding (SOLID + refactoring.guru), Testing, Design, Collaboration, Graph Thinking, Self-Management
-- **11 skills** — Design patterns, refactoring techniques, code quality, brainstorm, code review, planning, testing, deploy, aitmpl.com catalog, prompt engineering, token optimization
+- **11 skills** — Directory format (`skills/<name>/SKILL.md`), with effort/context/agent fields
 - **8 diagrams** — Mermaid graphs that replace text explanations (5× token savings)
-- **12 slash commands** — /start, /end, /implement, /build-graph, /blast-radius, /setup-stack, and more
+- **12 slash commands** — With model selection (haiku for lightweight), argument hints
 - **5 memory files** — Persistent state across sessions (Claude never forgets where it left off)
 - **Stack templates** — TypeScript, React, Python (or generate any stack with /setup-stack)
+- **settings.json** — Permissions (git/gh auto-allow), spinner tips, attribution, autocompact
+- **statusline-command.sh** — Colored status bar: model, tokens, git info, context usage %
 
 ## Key Features
 
 ### Self-Managing Claude
 Claude auto-plans before executing, auto-saves state between sessions, auto-compacts context before overflow, and auto-diagnoses when it loses track. The user only needs to say `/start` and `/end`.
+
+### Orchestration: Command → Agent → Skill
+Commands are user entry points. Agents run autonomously with preloaded skills (domain knowledge injected at startup). Dev agents auto-accept edits (`permissionMode: acceptEdits`), have execution limits (`maxTurns`), and preload quality skills.
 
 ### Stack Abstraction
 Dev agents contain zero framework-specific code. They read `stacks/active.md` for patterns. Change your entire stack by running `/setup-stack [new tech]` — all agents adapt automatically.
@@ -36,10 +41,18 @@ Dev agents contain zero framework-specific code. They read `stacks/active.md` fo
 ### Diagram-Based Code Graphs
 Inspired by [code-review-graph](https://github.com/tirth8205/code-review-graph). Claude maintains your codebase as 3 mermaid diagrams (structure, dependencies, test coverage). No MCP server, no Python, no external tools. Claude reads a 300-token diagram instead of scanning 200 files.
 
+### Colored Status Line
+Real-time status bar showing model, token I/O, project folder, git branch/status, and context usage with a progress bar. Colors match the agent roster (magenta, blue, green, yellow, red, cyan).
+
+### Smart Permissions & Git Integration
+`settings.json` auto-allows safe operations (git pull, gh read) and prompts for risky ones (git push, gh create). Attribution disabled by default. Spinner shows project-specific tips.
+
 ### Token Efficiency
 - `.claudeignore` blocks irrelevant files from context
 - Diagrams replace text explanations (300 tokens vs 1500)
 - `memory/STATE.md` prevents re-discovering context each session
+- `model: haiku` on lightweight commands saves tokens/cost
+- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: 80` compacts earlier
 - Prompts catalog with copy-paste templates optimized for minimal tokens
 
 ---

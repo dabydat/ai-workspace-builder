@@ -151,17 +151,92 @@ pnpm-lock.yaml, package-lock.json, yarn.lock, poetry.lock
 *.csv, *.parquet
 ```
 
+### settings.json format (generated in Phase 0 — copy to .claude/settings.json)
+```json
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "statusLine": {
+    "type": "command",
+    "command": "bash .claude/statusline-command.sh"
+  },
+  "enableAllProjectMcpServers": true,
+  "respectGitignore": true,
+  "includeGitInstructions": true,
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+  },
+  "permissions": {
+    "allow": [
+      "Edit(*)", "Write(*)",
+      "Bash(npm run *)", "Bash(npm test *)", "Bash(npx vitest *)", "Bash(npx tsup *)",
+      "Bash(git status)", "Bash(git log *)", "Bash(git diff *)", "Bash(git branch *)",
+      "Bash(git pull *)",
+      "Bash(gh pr view *)", "Bash(gh pr list *)", "Bash(gh pr checks *)",
+      "Bash(gh issue view *)", "Bash(gh issue list *)",
+      "Bash(ls *)"
+    ],
+    "ask": [
+      "Bash(git push *)", "Bash(git commit *)",
+      "Bash(gh pr create *)", "Bash(gh issue create *)", "Bash(gh api *)",
+      "Bash(npm publish *)", "Bash(rm *)", "Bash(rmdir *)"
+    ]
+  },
+  "attribution": { "commit": "", "pr": "" },
+  "spinnerTipsOverride": [
+    "Tip: Use /start and /end to save 500+ tokens per session",
+    "Tip: /brainstorm before deciding — multiple perspectives beat one",
+    "Tip: /blast-radius [file] shows what a change will impact",
+    "Tip: Diagrams save 5x tokens vs text explanations",
+    "Tip: /compact at ~50% context — don't wait for overflow",
+    "Tip: Read stacks/active.md for stack-specific patterns",
+    "Tip: specs/ before code — no spec = no implementation",
+    "Tip: Dev agents preload quality skills automatically",
+    "Tip: /review [file] audits code against coding.md standards",
+    "Tip: Verify your work — tests + typecheck 2-3x quality"
+  ]
+}
+```
+
+Key settings:
+- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "80"` — Compact earlier (default ~95%)
+- `git pull *` auto-allowed (safe), `git push *` requires confirmation (risky)
+- `gh` read operations auto-allowed, write operations require confirmation
+- `attribution` disabled — no Co-Authored-By on commits or PR footer
+- `spinnerTipsOverride` — project-specific tips replace generic spinner text
+
+### statusline-command.sh (generated in Phase 0)
+Bash script that shows a colored status bar:
+```
+Claude Opus 4 | in:12.4k out:832 | my-project | main (2 uncommitted, synced 12 min ago) | ██░░░░░░░░ 18% of 200k tokens
+```
+Colors match agent roster: magenta (model), cyan (tokens), blue (folder), green/yellow/red (git by state), adaptive (context bar: green < 50%, yellow 50-75%, red > 75%).
+
 ### CLAUDE.md format (generated LAST — references everything)
 Must include these sections in order:
 1. OPERATION PROTOCOL (who Claude is, self-management, session management)
-2. Core Behavior Rules (10 rules including auto-plan, diagrams-first, auto-compact)
-3. Agent Roster table (all agents with file paths)
-4. Stack Abstraction (reference to /setup-stack and stacks/)
-5. Model Selection (from memory/claude-capabilities.md)
-6. Token Economy (from memory/token-strategy.md)
-7. Quality Standards (all 6 rules with file paths)
-8. Code Graph section (diagram-based, 3 mermaid files, zero dependencies)
-9. Design Patterns Reference (refactoring.guru links)
-10. Skills & Commands tables
-11. Diagrams list with purpose
-12. File Structure tree
+2. Core Behavior Rules (11 rules including auto-plan, diagrams-first, auto-compact, **verify your work**)
+3. `<important>` conditional tags for critical rules:
+   - `<important if="writing or modifying code">` — read before edit, run tests, quality gate
+   - `<important if="context is above 50% or session is ending">` — save state before compact/end
+4. Agent Roster table (all agents with file paths)
+5. Stack Abstraction (reference to /setup-stack and stacks/)
+6. Model Selection (from memory/claude-capabilities.md)
+7. Token Economy (from memory/token-strategy.md)
+8. Quality Standards (all 6 rules with file paths)
+9. Code Graph section (diagram-based, 3 mermaid files, zero dependencies)
+10. Design Patterns Reference (refactoring.guru links)
+11. **Orchestration Pattern: Command → Agent → Skill**
+    - Commands are entry points (user interaction)
+    - Agents fetch/process using preloaded skills (domain knowledge)
+    - Skills with `user-invocable: false` are preloaded via `skills:` frontmatter
+    - Skills with `context: fork` run in isolated subagent context
+12. **Workflow Best Practices**
+    - Manual `/compact` at ~50% context
+    - Break subtasks < 50% context
+    - Start with plan mode for complex multi-file tasks
+    - Agents have `maxTurns` to prevent runaway execution
+    - Dev agents preload quality skills; business agents stay lightweight
+13. Skills & Commands tables
+14. Settings reference (settings.json → copy to .claude/settings.json)
+15. Diagrams list with purpose
+16. File Structure tree

@@ -1,11 +1,13 @@
 # Structure Reference — Every File and Its Purpose
 
-## Complete File Tree (65 files)
+## Complete File Tree (68+ files)
 ```
 claude-config/
 ├── CLAUDE.md              ← Master brain. Auto-loaded by Claude Code. Generated LAST.
 ├── README.md              ← Setup guide for humans/GitHub
 ├── .claudeignore          ← Files Claude must skip (node_modules, build, media, locks)
+├── settings.json          ← Team-shared settings (permissions, statusLine, spinnerTips, attribution)
+├── statusline-command.sh  ← Status bar script (model, tokens, git, context %)
 │
 ├── agents/ (13)           ← One file per specialist role
 │   ├── 00-orchestrator    ← Coordinates all agents (Mediator pattern). UNIVERSAL.
@@ -30,18 +32,18 @@ claude-config/
 │   ├── graph-thinking.md  ← Think in nodes+edges, blast radius via mermaid diagrams
 │   └── self-management.md ← Auto-plan, auto-sweep, auto-compact, auto-save
 │
-├── skills/ (11)           ← How-to guides (loaded on demand, not always in context)
-│   ├── design-patterns.md ← 22 GoF patterns with decision tree (from refactoring.guru)
-│   ├── refactoring-techniques.md ← Code smells + fixes (from refactoring.guru)
-│   ├── code-quality.md    ← Quality checklist before shipping any code
-│   ├── brainstorm.md      ← Multi-perspective ideation format (/brainstorm command)
-│   ├── code-review.md     ← Code audit checklist (/code-review command)
-│   ├── plan.md            ← Structured planning format (/plan command)
-│   ├── run-tests.md       ← Test execution + report format (/run-tests command)
-│   ├── deploy.md          ← Deployment checklist (/deploy command)
-│   ├── aitmpl-catalog.md  ← 1000+ components reference (from aitmpl.com)
-│   ├── prompt-engineering.md ← Optimal prompts for Claude (from platform docs)
-│   └── token-optimization.md ← Token efficiency rules (from support docs)
+├── skills/ (11)           ← Directory format: skills/<name>/SKILL.md (auto-discovered)
+│   ├── design-patterns/SKILL.md    ← 22 GoF patterns (preloaded into architect)
+│   ├── refactoring-techniques/SKILL.md ← Code smells + fixes (preloaded into devs)
+│   ├── code-quality/SKILL.md       ← Quality checklist (preloaded into qa-engineer)
+│   ├── brainstorm/SKILL.md         ← Multi-perspective ideation (effort: high, context: fork)
+│   ├── code-review/SKILL.md        ← Code audit checklist
+│   ├── plan/SKILL.md               ← Structured planning (effort: high)
+│   ├── run-tests/SKILL.md          ← Test execution + report
+│   ├── deploy/SKILL.md             ← Deployment checklist (manual only)
+│   ├── aitmpl-catalog/SKILL.md     ← 1000+ components reference (from aitmpl.com)
+│   ├── prompt-engineering/SKILL.md ← Optimal prompts (preloaded reference)
+│   └── token-optimization/SKILL.md ← Token efficiency rules (preloaded reference)
 │
 ├── stacks/ (3+ templates + active)
 │   ├── README.md          ← How stacks work, how to create new ones
@@ -91,11 +93,12 @@ claude-config/
 ## Generation Order
 Generate files in dependency order. A file can only reference files generated before it.
 
+Phase 0: settings.json, statusline-command.sh (standalone, no deps)
 Phase 1: .claudeignore, memory/*
 Phase 2: rules/*
-Phase 3: skills/*
+Phase 3: skills/* (directory format: skills/<name>/SKILL.md)
 Phase 4: diagrams/*
-Phase 5: agents/*
+Phase 5: agents/* (reference rules + skills, include maxTurns/color/memory/skills/permissionMode)
 Phase 6: stacks/*
-Phase 7: commands/*
+Phase 7: commands/* (include model: haiku for lightweight, argument-hint, disable-model-invocation)
 Phase 8: prompts/*, specs/*, CLAUDE.md, README.md

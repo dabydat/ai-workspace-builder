@@ -205,11 +205,27 @@ Key settings:
 - `spinnerTipsOverride` — project-specific tips replace generic spinner text
 
 ### statusline-command.sh (generated in Phase 0)
-Bash script that shows a colored status bar:
+Bash script that shows a colored status bar. **Requires:** `jq` installed, script must be `chmod +x`.
+
 ```
-Claude Opus 4 | in:12.4k out:832 | my-project | main (2 uncommitted, synced 12 min ago) | ██░░░░░░░░ 18% of 200k tokens
+Opus | in:15.2k out:4.5k | $0.05 | my-project | main (clean) | ██░░░░░░░░ 18% of 200k
 ```
-Colors match agent roster: magenta (model), cyan (tokens), blue (folder), green/yellow/red (git by state), adaptive (context bar: green < 50%, yellow 50-75%, red > 75%).
+
+**Segments and JSON source fields:**
+| Segment | Color | JSON field |
+|---------|-------|------------|
+| Model | magenta bold | `model.display_name` or `model.id` |
+| Token I/O | cyan | `context_window.total_input_tokens` / `total_output_tokens` |
+| Cost | dim | `cost.total_cost_usd` |
+| Folder | blue bold | `workspace.current_dir` or `cwd` |
+| Git branch | green/yellow/red (by state) | live `git status` on `cwd` |
+| Context bar | adaptive (green < 50%, yellow < 75%, red 75%+) | `context_window.used_percentage` / `context_window_size` |
+
+**Script requirements:**
+- Add `export PATH="$HOME/bin:$PATH"` at top (ensures `jq` is found)
+- Handle `null` values gracefully (fields are null before first API call)
+- Use `printf "%b"` for ANSI color output
+- Must be marked executable: `chmod +x .claude/statusline-command.sh`
 
 ### CLAUDE.md format (generated LAST — references everything)
 Must include these sections in order:

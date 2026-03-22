@@ -227,7 +227,7 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 ## Checklist Before Delivery
 
 - [ ] settings.json exists with permissions, statusLine, spinnerTips, attribution, autocompact
-- [ ] statusline-command.sh exists with colored segments (model, tokens, git, context)
+- [ ] statusline-command.sh exists, is `chmod +x`, requires `jq`, shows model/tokens/cost/git/context
 - [ ] .claudeignore exists and covers node_modules, build, media, locks
 - [ ] memory/STATE.md has project name, stack, phase, goals
 - [ ] rules/self-management.md is present (auto-plan, auto-compact, auto-save)

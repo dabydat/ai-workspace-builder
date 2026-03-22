@@ -121,16 +121,18 @@ The skill activates, asks about your project, and generates the full configurati
 ```
 your-project/
 └── claude-config/
-    ├── CLAUDE.md              ← Master brain (auto-loaded)
+    ├── CLAUDE.md              ← Master brain (auto-loaded, <important> tags, 11 rules)
     ├── .claudeignore          ← Files Claude skips
-    ├── agents/ (13)           ← Stack-agnostic specialists
+    ├── settings.json          ← Permissions, statusLine, spinnerTips, attribution
+    ├── statusline-command.sh  ← Colored status bar (model, tokens, git, context %)
+    ├── agents/ (13)           ← With maxTurns, color, memory, skills, permissionMode
     ├── rules/ (6)             ← Quality standards + self-management
-    ├── skills/ (11)           ← How-to guides (refactoring.guru, aitmpl.com)
+    ├── skills/ (11)           ← Directory format: skills/<name>/SKILL.md
     ├── stacks/                ← Stack-specific patterns
     │   └── active.md          ← Current stack (agents read this)
     ├── memory/ (5)            ← Persistent state across sessions
     ├── diagrams/ (8+3)        ← Visual context + code graphs
-    ├── commands/ (12)         ← Slash commands
+    ├── commands/ (12)         ← With model: haiku, argument-hint, disable-model-invocation
     ├── prompts/CATALOG.md     ← Copy-paste prompt templates
     └── specs/TEMPLATE.md      ← Feature spec template
 ```
@@ -144,8 +146,9 @@ your-project/
 | Reads `memory/STATE.md` | Start of every conversation |
 | Plans before executing | Every non-trivial task |
 | Reads diagrams before source files | Before touching existing code |
-| Compacts context proactively | When context is filling up |
-| Saves state to memory files | When work completes |
+| Verifies its work (tests, typecheck) | After implementing changes (Rule 11) |
+| Compacts context proactively | When context reaches ~50% (`<important>` enforced) |
+| Saves state to memory files | When work completes (`<important>` enforced) |
 | Re-reads memory if it loses track | When it detects it's repeating itself |
 
 Defined in `rules/self-management.md`. The user never needs to say "plan first" or "save your state."
@@ -158,6 +161,7 @@ Defined in `rules/self-management.md`. The user never needs to say "plan first" 
 - [aitmpl.com](https://www.aitmpl.com/) — 1000+ Claude Code templates
 - [Claude Platform Docs](https://platform.claude.com/docs/en/intro) — Best practices & prompting
 - [code-review-graph](https://github.com/tirth8205/code-review-graph) — Graph-based code review concept
+- [claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) — Community best practices (84 tips, agent/skill frontmatter, hooks)
 
 ---
 

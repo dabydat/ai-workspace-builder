@@ -12,6 +12,9 @@ Must include:
 - Design patterns: Creational (Factory, Builder, Singleton), Structural (Adapter, Facade, Decorator, Proxy),
   Behavioral (Strategy, Observer, Command, State, Chain of Responsibility, Template Method)
   Each pattern → when to use + 1-line example
+- Conventional Commits: type(scope): description — feat, fix, docs, style, refactor, test, chore, perf
+- Naming conventions table: camelCase (vars/functions), PascalCase (classes/types), UPPER_SNAKE_CASE (constants), kebab-case (files/dirs)
+  Note: stack-specific overrides (e.g., snake_case for Python) go in stacks/active.md
 - Pre-merge checklist: no magic values, no nesting, no duplicates, no dead code, no `any`, functions ≤30 lines
 
 ### rules/testing.md

@@ -46,6 +46,7 @@ Before generating anything, understand:
 4. **Monetization** — How will they make money? (SaaS, open source, templates, API)
 5. **Constraints** — Region, financial access, specific tools required?
 6. **What they already have** — Existing claude-config? Existing CLAUDE.md? Start from scratch?
+7. **Domain terminology** — Any project-specific terms Claude should know? (e.g., "workspace" means X, "tenant" means Y). If yes, add a `## Domain Glossary` section to CLAUDE.md.
 
 **CRITICAL:** If they mention a stack, ask which specific technologies.
 "TypeScript project" is too vague. "TypeScript + Fastify + Prisma + PostgreSQL" is actionable.
@@ -244,5 +245,9 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 - [ ] diagrams/context-map.mermaid matches the actual file structure
 - [ ] The agent roster in CLAUDE.md matches the agents/ folder
 - [ ] prompts/CATALOG.md has templates for all commands
+- [ ] rules/coding.md includes Conventional Commits format and naming conventions
+- [ ] stacks/active.md includes Terminal Commands section with exact flags
+- [ ] stacks/active.md includes Naming Overrides section (stack-specific conventions)
+- [ ] If domain terminology exists, CLAUDE.md has a Domain Glossary section
 - [ ] README.md or GUIDE.md explains setup in under 2 minutes of reading
 - [ ] All files copied to .claude/ (settings.json, agents/, skills/, commands/, statusline-command.sh)

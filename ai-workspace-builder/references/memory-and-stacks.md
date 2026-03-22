@@ -115,6 +115,25 @@ Changing the stack = replacing one file. Agents adapt automatically.
 - Repository/service pattern
 - API route pattern
 
+## Terminal Commands
+[Exact commands with flags for common dev tasks:]
+```bash
+# Dev
+[command to start dev server / watch mode]
+
+# Build
+[command to build for production]
+
+# Test
+[command to run tests, with common flags]
+
+# Lint / Format
+[command to lint and format]
+
+# Deploy
+[command to deploy]
+```
+
 ## Testing
 [Test framework, runner, example test]
 
@@ -123,6 +142,10 @@ Changing the stack = replacing one file. Agents adapt automatically.
 
 ## Publishing / Distribution
 [How to publish: npm, pip, docker, etc.]
+
+## Naming Overrides
+[Stack-specific naming conventions that override rules/coding.md defaults]
+[e.g., Python: snake_case for functions/variables, Go: short variable names]
 ```
 
 ### /setup-stack command behavior

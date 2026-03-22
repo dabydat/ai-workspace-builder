@@ -252,6 +252,7 @@ Must include these sections in order:
     - Start with plan mode for complex multi-file tasks
     - Agents have `maxTurns` to prevent runaway execution
     - Dev agents preload quality skills; business agents stay lightweight
+    - **Parallel worktrees:** `claude --worktree feature/branch` for isolated parallel sessions
 13. Skills & Commands tables
 14. Settings reference (settings.json → copy to .claude/settings.json)
 15. Diagrams list with purpose

@@ -37,6 +37,12 @@ Must include:
 - Brainstorm format: 3+ perspectives from different agents → trade-off matrix → recommendation
 - Conflict resolution: both write positions → orchestrator reviews → data-driven decision → document
 - Standup: DONE | DOING | BLOCKED (async, 5 min)
+- **Parallel worktrees:** `claude --worktree feature/branch-name` for isolated parallel work
+  - Each worktree is a separate physical directory under `.claude/worktrees/<branch>`
+  - Same git history, independent working tree — agents cannot interfere with each other
+  - When to use: 2+ features with overlapping files, long-running tasks, risky refactors
+  - Agents with `isolation: worktree` in frontmatter auto-run in worktrees
+  - Merge through normal git workflows (PR per branch)
 
 ### rules/graph-thinking.md
 Must include:

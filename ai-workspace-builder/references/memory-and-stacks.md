@@ -1,41 +1,74 @@
 # Memory & Stacks Guide
 
-## MEMORY — 5 Files for Persistent State
+## MEMORY — Two-Tier Architecture
 
-### memory/STATE.md (THE most important file in the entire config)
+**Rule:** `claude-config/memory/` is for workspace config only. Project data lives in `[project]/memory/`.
+
+```
+claude-config/memory/
+├── STATE.md          ← Workspace state: active project pointer + project list
+├── DECISIONS.md      ← Workspace-level ADRs (apply across all projects)
+├── CHANGELOG.md      ← Config changelog (versions, not project sessions)
+├── claude-capabilities.md
+└── token-strategy.md
+
+[project]/memory/     ← One per project. Created at project start.
+├── STATE.md          ← Project phase, last session, next action
+├── DECISIONS.md      ← Project-specific ADRs
+└── CHANGELOG.md      ← Project session log
+```
+
+**Session protocol:**
+```
+/start → read claude-config/memory/STATE.md → find active project → read [project]/memory/STATE.md
+/end   → write to [project]/memory/STATE.md + [project]/memory/CHANGELOG.md only
+```
+
+---
+
+## 5 Config Files in claude-config/memory/
+
+### memory/STATE.md (workspace pointer — read first, then follow to project)
 ```markdown
-# STATE — Current Project State
-> READ THIS FIRST. Every session starts here. Update at every session end.
+# WORKSPACE STATE
+> READ THIS FIRST. Then read the active project's memory.
+
+## Workspace
+- **Category:** [category]
+- **Stack default:** [stack]
+- **Location:** [location]
+- **Monetization:** [payment methods]
 
 ## Active Project
-- **Name:** [name]
-- **Category:** [category]
-- **Phase:** [0-5]
+- **Name:** [project-name]
+- **Folder:** [project-folder]/
+- **Read next:** [project-folder]/memory/STATE.md
+
+## All Projects
+| Project | Folder | Status |
+|---------|--------|--------|
+| [name] | [folder]/ | [Active/Done] |
+```
+
+### [project]/memory/STATE.md (project-specific state)
+```markdown
+# [Project Name] — Project State
+> Read after claude-config/memory/STATE.md. Update at every session end.
+
+## Status
+- **Phase:** [current phase]
 - **Last session:** [date]
 - **Next action:** [single most important next step]
 
-## Context (3 lines — don't re-explain, just read)
-[Line 1: what exists]
-[Line 2: what was just done]
-[Line 3: what's next]
+## Context
+- Stack: [tech stack]
+- [2-3 key facts about the project]
 
 ## Done
 - [x] [completed items]
 
 ## Next (priority order)
 1. [ ] [pending items]
-
-## Workspace Variables
-- **Stack:** [from stacks/active.md]
-- **Location:** [user's location]
-- **Monetization:** [payment methods available]
-- **Constraint:** [limitations]
-- **Goal:** [what they're trying to achieve]
-```
-
-Update template (at bottom of STATE.md):
-```
-<!-- Update: Phase, date, next action, move done items, 3-line context -->
 ```
 
 ### memory/CHANGELOG.md

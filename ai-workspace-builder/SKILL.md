@@ -47,9 +47,31 @@ Before generating anything, understand:
 5. **Constraints** — Region, financial access, specific tools required?
 6. **What they already have** — Existing claude-config? Existing CLAUDE.md? Start from scratch?
 7. **Domain terminology** — Any project-specific terms Claude should know? (e.g., "workspace" means X, "tenant" means Y). If yes, add a `## Domain Glossary` section to CLAUDE.md.
+8. **Business context** — Who are the main users? What are the top 3 things they must do? Is it multi-tenant? What are the main data entities?
 
 **CRITICAL:** If they mention a stack, ask which specific technologies.
 "TypeScript project" is too vague. "TypeScript + Fastify + Prisma + PostgreSQL" is actionable.
+
+### Step 1.5: Business Analysis Layer
+
+**Read `references/business-analysis.md`** for the full methodology.
+
+Every project config must include the business analysis layer. Generate in this order:
+
+1. **skills/business-analysis/SKILL.md** — templates for all BA artifacts (Phase 3)
+2. **agents/13-systems-analyst.md** — use cases, user stories, process flows, sequence diagrams (Phase 5)
+3. **agents/14-dba.md** — ERD, schema, data dictionary, integrity rules (Phase 5)
+4. **commands/create-docs.md** — scaffolds the docs/ folder at project start (Phase 7)
+
+These four files are **non-optional**. Every project needs a Systems Analyst and a DBA even if those roles are filled by the same person or by AI.
+
+**Add to `rules/collaboration.md`:** A Pre-Development Phase rule that mandates `/create-docs` → systems-analyst → dba → architect BEFORE any development agent starts work.
+
+**Add to `CLAUDE.md` Agent Roster:**
+| Task | Agent | File |
+|---|---|---|
+| Requirements, use cases, user stories, process flows | Systems Analyst | agents/13-systems-analyst.md |
+| ERD, database schema, data dictionary, data integrity | DBA | agents/14-dba.md |
 
 ### Step 2: Generate the Configuration
 
@@ -82,6 +104,7 @@ Phase 3 — Skills (directory format: skills/<name>/SKILL.md):
   skills/design-patterns/SKILL.md      (user-invocable: false — preloaded into architect)
   skills/refactoring-techniques/SKILL.md (user-invocable: false — preloaded into devs)
   skills/code-quality/SKILL.md         (user-invocable: false — preloaded into qa-engineer)
+  skills/business-analysis/SKILL.md   (user-invocable: false — preloaded into systems-analyst + dba)
   skills/brainstorm/SKILL.md           (effort: high, context: fork, agent: general-purpose)
   skills/code-review/SKILL.md          (allowed-tools: Read, Grep, Glob)
   skills/plan/SKILL.md                 (effort: high)
@@ -115,6 +138,8 @@ Phase 5 — Agents (reference rules + skills, include full frontmatter):
   agents/10-content-strategist.md (maxTurns: 10)
   agents/11-business-analyst.md   (maxTurns: 10)
   agents/12-dx-engineer.md        (maxTurns: 10, color: cyan)
+  agents/13-systems-analyst.md    (maxTurns: 15, color: cyan, skills: [business-analysis])
+  agents/14-dba.md                (maxTurns: 15, color: blue, skills: [business-analysis])
 
 Phase 6 — Stacks (referenced by dev agents):
   stacks/README.md
@@ -134,6 +159,7 @@ Phase 7 — Commands (include model/argument-hint/disable-model-invocation):
   commands/build-graph.md
   commands/blast-radius.md    (argument-hint: "[target]")
   commands/setup-stack.md     (argument-hint: "[description]")
+  commands/create-docs.md     (argument-hint: "[project-name]")
 
 Phase 8 — Orchestration (references everything):
   prompts/CATALOG.md

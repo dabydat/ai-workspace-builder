@@ -1,5 +1,42 @@
 # Changelog
 
+## v1.2.0 — 2026-03-23
+
+### Business Analysis Layer
+
+Every project now starts with a mandatory analysis phase before any code is written.
+
+**New Agents:**
+- `agents/13-systems-analyst.md` — use cases, user stories, BPMN process flows, sequence diagrams. Preloads `business-analysis` skill. Color: cyan.
+- `agents/14-dba.md` — ERD, SQL DDL schema, data dictionary, index strategy, multi-tenancy design, data integrity rules. Preloads `business-analysis` skill. Color: blue.
+
+**New Skill:**
+- `skills/business-analysis/SKILL.md` — 12-section template library covering: actor identification, use case diagrams, use case specifications, user stories (Given/When/Then), BPMN process flows, sequence diagrams, ERD, data dictionary row format, requirements doc structure, team RACI matrix, docs/ folder structure, quality gate checklist. `user-invocable: false` — preloaded into agents 13 and 14.
+
+**New Command:**
+- `commands/create-docs.md` — `/create-docs [project-name]` scaffolds the complete docs/ folder in one command. Asks 5 questions, generates 9 files with Mermaid diagram stubs, outputs the next-step sequence (systems-analyst → dba → architect → product-manager).
+
+**New Reference:**
+- `references/business-analysis.md` — Complete guide for the business analysis layer: agent frontmatter, skill content requirements, command behavior, docs/ folder structure, agent preloading, updated generation order, CLAUDE.md additions.
+
+**Updated Files:**
+- `SKILL.md` — Added Step 1.5 (business analysis gather), added agents 13+14 and business-analysis skill to generation order, added create-docs to Phase 7
+- `references/structure.md` — Updated agent count (13→15), skill count (11→14), command count (12→13), added all new entries to file tree and generation order
+- `README.md` — Full project lifecycle workflow section, business analysis layer section, updated counts throughout, changelog section
+
+**docs/ folder structure (generated per project by /create-docs):**
+```
+docs/
+├── 01-requirements/REQUIREMENTS.md
+├── 02-analysis/USE_CASES.md + USER_STORIES.md
+├── 03-database/ERD.md + SCHEMA.md + DATA_DICTIONARY.md
+├── 04-architecture/SYSTEM_CONTEXT.md
+├── 05-flows/SEQUENCE_DIAGRAMS.md
+└── 06-team/TEAM_ROLES.md
+```
+
+**Methodology source:** BABOK v3 adapted for AI-assisted development.
+
 ## v1.1.0 — 2026-03-21
 
 ### Best Practices Update

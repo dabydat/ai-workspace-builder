@@ -18,7 +18,7 @@ You say: **"Configure my workspace for TypeScript + Next.js + PostgreSQL"**
 
 The skill generates **80+ files** that turn Claude into a self-managing development team with built-in business analysis, database design, and development best practices:
 
-- **15 agents** — From Systems Analyst and DBA to Architect, Backend, Frontend, QA, DevOps, and 7 business roles
+- **17 agents** — From CEO and COO to Systems Analyst, DBA, Architect, Backend, Frontend, QA, DevOps, and the full business team
 - **14 skills** — Including business-analysis templates (use cases, ERD, user stories, BPMN flows)
 - **6 rules** — Coding (SOLID + refactoring.guru), Testing, Design, Collaboration, Graph Thinking, Self-Management
 - **8 diagrams** — Mermaid graphs that replace text explanations (5× token savings)
@@ -232,7 +232,7 @@ your-project/
     ├── .claudeignore                ← Files Claude skips
     ├── settings.json                ← Permissions, statusLine, spinnerTips, attribution
     ├── statusline-command.sh        ← Colored status bar (model, tokens, git, context %)
-    ├── agents/ (15)                 ← Full frontmatter: maxTurns, color, memory, skills
+    ├── agents/ (17)                 ← Full frontmatter: maxTurns, color, memory, skills
     │   ├── 00-orchestrator.md       ← Coordinates all agents
     │   ├── 01-architect.md          ← System design, API contracts
     │   ├── 02-backend-dev.md        ← APIs, DB, queues
@@ -247,7 +247,9 @@ your-project/
     │   ├── 11-business-analyst.md   ← Unit economics, KPIs
     │   ├── 12-dx-engineer.md        ← CX/DX/UX/UI, onboarding
     │   ├── 13-systems-analyst.md    ← Use cases, user stories, process flows ← NEW
-    │   └── 14-dba.md                ← ERD, schema, data dictionary ← NEW
+    │   ├── 14-dba.md                ← ERD, schema, data dictionary ← NEW
+    │   ├── 15-ceo.md                ← Vision, strategy, OKRs, PMF, investor narrative
+    │   └── 16-coo.md                ← Operations, processes, scaling, risk management
     ├── rules/ (6)                   ← Non-negotiable quality standards
     ├── skills/ (14)                 ← Directory format: skills/<name>/SKILL.md
     │   └── business-analysis/       ← BA templates preloaded into agents 13+14 ← NEW

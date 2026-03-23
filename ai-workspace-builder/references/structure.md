@@ -9,7 +9,7 @@ claude-config/
 ├── settings.json          ← Team-shared settings (permissions, statusLine, spinnerTips, attribution)
 ├── statusline-command.sh  ← Status bar script (model, tokens, git, context %)
 │
-├── agents/ (13)           ← One file per specialist role
+├── agents/ (17)           ← One file per specialist role
 │   ├── 00-orchestrator    ← Coordinates all agents (Mediator pattern). UNIVERSAL.
 │   ├── 01-architect       ← System design, API contracts, patterns. Reads stacks/active.md.
 │   ├── 02-backend-dev     ← Server code. Reads stacks/active.md. STACK-AGNOSTIC.
@@ -24,7 +24,9 @@ claude-config/
 │   ├── 11-business-analyst ← Economics, KPIs, pricing. UNIVERSAL.
 │   ├── 12-dx-engineer     ← CX/DX/UX/UI, onboarding. UNIVERSAL.
 │   ├── 13-systems-analyst ← Use cases, user stories, process flows, sequence diagrams. UNIVERSAL.
-│   └── 14-dba             ← ERD, schema, data dictionary, data integrity. UNIVERSAL.
+│   ├── 14-dba             ← ERD, schema, data dictionary, data integrity. UNIVERSAL.
+│   ├── 15-ceo             ← Vision, strategy, OKRs, PMF, business model, investor narrative. UNIVERSAL.
+│   └── 16-coo             ← Operations, processes, resource allocation, scaling, risk management. UNIVERSAL.
 │
 ├── rules/ (6)             ← Non-negotiable quality standards
 │   ├── coding.md          ← SOLID, design patterns (refactoring.guru), code smells, thresholds

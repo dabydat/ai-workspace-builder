@@ -262,6 +262,7 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 - [ ] Skills use directory format: skills/<name>/SKILL.md
 - [ ] All agents have full frontmatter: maxTurns, color, and skills (for dev agents: permissionMode)
 - [ ] Dev agent skills preloaded: architect→design-patterns, devs→refactoring-techniques, qa→code-quality, devops→deploy
+- [ ] Business analysis agents preloaded: systems-analyst→business-analysis, dba→business-analysis
 - [ ] CLAUDE.md has 11 rules (including rule 11: verify your work)
 - [ ] CLAUDE.md has `<important>` tags for critical rules (read-before-write, save state)
 - [ ] CLAUDE.md has Orchestration Pattern section (Command → Agent → Skill)

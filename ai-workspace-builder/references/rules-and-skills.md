@@ -136,3 +136,20 @@ Anti-patterns table: vague vs specific prompts with token savings
 Source: support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work
 7 rules: never repeat, diagrams > text, short prompts, update STATE always, one task per prompt,
 new conversation at 70%, explicit output format
+
+### skills/business-analysis/SKILL.md
+`user-invocable: false` — preloaded into agents 13 (systems-analyst) and 14 (dba)
+Source: BABOK v3 adapted for AI-assisted development
+Must include 12 sections (template library for all BA artifacts):
+1. Actor identification table (Primary / Secondary / AI Agent / External System)
+2. Use case diagram template (Mermaid `graph LR`)
+3. Use case specification template (9-field table: ID, Name, Actor, Preconditions, Trigger, Main Flow, Alternative Flow, Exception Flow, Postconditions, Business Rules)
+4. User story format (As a / I want / So that + Given/When/Then acceptance criteria)
+5. BPMN-style process flow template (Mermaid `flowchart TD` with swimlanes)
+6. Sequence diagram template (Mermaid `sequenceDiagram` with actor/participant/alt/loop)
+7. ERD template (Mermaid `erDiagram` with cardinality notation)
+8. Data dictionary row standard (field | type | nullable | description | business rules)
+9. Requirements document structure (FR, NFR, Constraints, Out of Scope, Assumptions)
+10. Team RACI matrix template (Role | Artifact | R/A/C/I)
+11. docs/ folder structure (01-requirements through 06-team)
+12. Quality gate checklist (10 checks before handoff to dev team)

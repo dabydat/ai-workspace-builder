@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.2.1 — 2026-03-23
+
+### C-Suite Agents
+
+Added the two missing executive roles to complete the business team.
+
+**New Agents:**
+- `agents/15-ceo.md` — Vision, strategy, OKRs, product-market fit validation, pivot decisions, investor narrative, go-to-market strategy. Model: opus-4-6. Color: magenta.
+- `agents/16-coo.md` — Operations, process design, resource allocation, scaling playbooks, risk management, KPI dashboard, weekly operations review. Model: sonnet-4-6. Color: yellow.
+
+**Updated Files:**
+- `references/agents-guide.md` — Behaviors for agents 15+16; added to UNIVERSAL list; updated "create new agent" example numbers
+- `references/structure.md` — Agent count updated to 17; agents 15+16 added to file tree
+- `README.md` — Agent count updated to 17; agents 15+16 in file tree
+
+**Agent count:** 15 → 17 (5 dev + 12 universal)
+
+---
+
 ## v1.2.0 — 2026-03-23
 
 ### Business Analysis Layer

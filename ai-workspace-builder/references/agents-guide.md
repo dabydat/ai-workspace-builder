@@ -61,7 +61,8 @@ skills:                            # Preloaded skills — full content injected 
 
 ### UNIVERSAL agents (never change between projects)
 00-orchestrator, 06-product-manager, 07-project-manager, 08-ux-designer,
-09-growth-marketer, 10-content-strategist, 11-business-analyst, 12-dx-engineer
+09-growth-marketer, 10-content-strategist, 11-business-analyst, 12-dx-engineer,
+13-systems-analyst, 14-dba, 15-ceo, 16-coo
 
 These contain domain knowledge that doesn't depend on technology.
 Their content is the same whether the project uses Python or TypeScript.
@@ -152,9 +153,42 @@ This is the abstraction: change the stack file, agents adapt automatically.
 - Color semantics: green=success, red=error, yellow=warning, blue=info
 - Progressive disclosure: essentials visible, advanced under flags
 
+### 13-Systems Analyst (model: sonnet-4-6, maxTurns: 15, color: cyan, skills: [business-analysis])
+- Runs BEFORE any development agent. No use cases = no implementation.
+- 7-step process: Elicitation → Actor Analysis → Use Case Derivation → Use Case Specification → User Stories → Process Flows + Sequence Diagrams → Handoff
+- Asks ALL 10 elicitation questions at once — never one at a time
+- Use case formula: Actor + Goal = one use case. Name format: Verb + Noun.
+- User stories: As a / I want / So that + Given/When/Then acceptance criteria
+- Produces: docs/02-analysis/USE_CASES.md + USER_STORIES.md + docs/05-flows/SEQUENCE_DIAGRAMS.md
+
+### 14-DBA (model: sonnet-4-6, maxTurns: 15, color: blue, skills: [business-analysis])
+- Runs AFTER systems-analyst (entities come from use cases), BEFORE backend-dev
+- ERD in Mermaid `erDiagram` format — every entity, every relationship, cardinality
+- Full SQL DDL: CREATE TABLE with all constraints, enums, indexes
+- Data Dictionary: every field defined (type, nullable, business meaning, constraints)
+- Multi-tenancy: org_id on all tables + Row Level Security (RLS) policies
+- Append-only tables: DB-level rules that prevent UPDATE/DELETE (e.g., token ledger)
+- Produces: docs/03-database/ERD.md + SCHEMA.md + DATA_DICTIONARY.md
+
+### 15-CEO (model: opus-4-6, maxTurns: 10, color: magenta, tools include WebSearch)
+- Owns vision, strategy, OKRs, and product-market fit validation
+- PMF test: 40% very disappointed if product disappears + flat retention + organic referrals
+- Business Model Canvas before every major decision
+- Investor narrative: Problem → Market → Solution → Traction → Model → Team → Ask
+- Pivot decision framework: zoom in → zoom out → segment → channel → tech → full pivot
+- Escalates nothing — makes the final call on strategic direction
+
+### 16-COO (model: sonnet-4-6, maxTurns: 10, color: yellow, tools include WebSearch)
+- Turns CEO strategy into quarterly operational plans
+- Owns the operations KPI dashboard: North Star + leading + lagging + health metrics
+- Scaling playbooks: documents what breaks at each growth stage and what to build first
+- Process design: every core process has owner, SLA, failure mode, and metrics
+- Risk register: Probability × Impact score → mitigation → owner → status
+- 70/20/10 resource rule: 70% core, 20% growth experiments, 10% moonshots
+
 ## When to Create a NEW Agent
 Only if NO existing agent covers the role. Examples:
-- Flutter project → create 13-mobile-dev.md
-- ML project → create 13-ml-engineer.md
-- Blockchain → create 13-smart-contract-dev.md
+- Flutter project → create 17-mobile-dev.md
+- ML project → create 17-ml-engineer.md
+- Blockchain → create 17-smart-contract-dev.md
 New agents MUST read stacks/active.md if they write code.

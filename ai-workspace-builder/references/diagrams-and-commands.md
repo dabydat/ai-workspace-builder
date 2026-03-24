@@ -84,22 +84,24 @@ argument-hint: "[spec-name]"        # Optional: hint for expected arguments
 - `/end` (`model: haiku`) — Update STATE.md + CHANGELOG.md + DECISIONS.md. Output 2 lines.
 
 **Agent activation:**
-- `/activate [agent]` — Read STATE.md + agents/[name].md + relevant rules. Follow that agent's checklist.
+- `/activate [agent]` — Read STATE.md + agents/[name].md + relevant rules. Follow that agent's checklist for the session. Lists all 17 available agents.
 
 **Stack setup:**
 - `/setup-stack [description]` — Generate stacks/active.md with real code patterns. Save template copy. Create stack-specific skills/agents only if needed. Update STATE.md. Never touch universal config.
 
 **Planning:**
-- `/plan` — Structured plan for single task (from skills/plan.md format)
-- `/plan-sprint` — Sprint plan with gantt timeline + agent assignments + parallel lanes
-- `/create-spec [name]` — Create specs/[name]-spec.md + diagrams/[name].mermaid
+- `/plan-sprint` — Launches `product-manager` + `project-manager` IN PARALLEL (background). Then `orchestrator` integrates outputs and produces gantt chart with agent swimlanes + parallel lanes.
+- `/create-spec [name]` — Invokes `architect` to validate pattern + file list. Then writes specs/[name]-spec.md + diagrams/[name].mermaid.
 
 **Implementation:**
-- `/implement [spec]` — BEFORE: read graphs + spec + diagram. DURING: follow rules + stack. AFTER: update graphs + verify blast radius. ALWAYS: update STATE.md.
+- `/implement [spec]` — Reads graphs. Launches `architect` + `backend-dev` + `frontend-dev` IN PARALLEL (background). After all complete, invokes `qa-engineer` sequentially. Updates graphs and STATE.md.
 
 **Review:**
-- `/review [file]` — Standard code review against rules/coding.md + rules/testing.md
-- `/review-impact [file]` — Code review + blast radius from code graph diagrams. Read diagrams first, then only impacted files.
+- `/review [file]` — Invokes `qa-engineer` agent. Outputs PASS/FAIL table against code-quality + refactoring-techniques checklists.
+- `/review-impact [file]` — Launches `architect` (blast-radius trace) + `qa-engineer` (quality check) IN PARALLEL. Integrates both outputs into unified report.
+
+**Documentation:**
+- `/create-docs [project]` — Scaffolds full docs/ folder. Then launches `systems-analyst` + `dba` IN PARALLEL to complete use cases, ERD, and schema.
 
 **Code graphs (diagram-based, no MCP):**
 - `/build-graph` — Read source signatures. Generate 3 mermaid diagrams (code-graph, code-deps, code-tests).
@@ -109,5 +111,7 @@ argument-hint: "[spec-name]"        # Optional: hint for expected arguments
 - Every command starts by reading STATE.md (except /start which IS the STATE reader)
 - Every command that changes code ends by suggesting /build-graph to update graphs
 - Every implementation/review command references rules/coding.md
+- Multi-agent commands MUST use the Agent tool with explicit subagent_type + run_in_background
+- Independent tasks ALWAYS run in parallel — sequential execution is a bug, not a feature
+- Each agent prompt must include exact file paths — agents don't share conversation context
 - Commands use file references ("Read specs/$ARGUMENTS-spec.md"), never inline content
-- No command should require >500 tokens of instruction text

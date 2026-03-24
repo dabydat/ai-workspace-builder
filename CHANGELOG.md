@@ -1,5 +1,47 @@
 # Changelog
 
+## v1.3.0 — 2026-03-24
+
+### Parallel Agent Execution + Hooks + Statusline Trace
+
+**Core change:** Commands now invoke agents via the Agent tool with explicit `subagent_type` and `run_in_background` parameters. Previously, commands gave text instructions that Claude read as guidance but never triggered real agent execution. Now they are wired to spawn and coordinate agents in parallel.
+
+**Updated Commands (parallel agent execution):**
+- `commands/implement.md` — Launches `architect` + `backend-dev` + `frontend-dev` IN PARALLEL (background). After all complete, invokes `qa-engineer` sequentially for quality gate.
+- `commands/plan-sprint.md` — Runs `product-manager` + `project-manager` IN PARALLEL (background), then `orchestrator` integrates both outputs into Gantt + agent swimlanes.
+- `commands/review.md` — Invokes `qa-engineer` agent explicitly. Outputs PASS/FAIL table.
+- `commands/review-impact.md` — Runs `architect` (blast-radius trace) + `qa-engineer` (code quality) IN PARALLEL.
+- `commands/create-docs.md` — Scaffolds `docs/` folder, then runs `systems-analyst` + `dba` IN PARALLEL to complete use cases, ERD, and schema.
+- `commands/create-spec.md` — Invokes `architect` to validate pattern + file list before writing spec.
+- `commands/activate.md` — Fixed agent list to include all 17 agents with correct filenames.
+
+**New: PreToolUse hook for active file tracking:**
+- `settings.json` now includes a `PreToolUse` hook on `Read|Edit|Write`
+- Hook writes `{"file": "/path", "tool": "Read", "ts": 1234}` to `/tmp/.claude-active-file`
+- Statusline reads this file to show which file Claude is working on in real time
+
+**Upgraded statusline (`statusline-command.sh`):**
+- Added: agent name segment (visible when running as subagent, e.g. `[backend-dev]`)
+- Added: turn counter (`t5` = 5th turn in session)
+- Added: active file segment (last file accessed, fades after 30s, icon `r`/`e`/`w`)
+- Improved: cost formatting (4 decimals if < $0.01, 2 decimals otherwise)
+- Improved: git status uses compact symbols (`✓` clean, `3~+2` changed+untracked, `10!` many)
+- Improved: separator changed to `│` for cleaner visual separation
+
+**Updated skill documentation:**
+- `SKILL.md` — New section "Parallel Agent Execution (MANDATORY in commands)" with pattern, rules, and command map
+- `SKILL.md` — New section "Settings, Hooks & Status Line" with hook JSON template
+- `SKILL.md` — Updated checklist: 3 new items for parallel agents + hooks
+- `SKILL.md` — Phase 0: statusline description updated; Phase 5: added agents 15-ceo + 16-coo; Phase 7: removed non-existent `plan.md`
+- `references/structure.md` — Fixed: removed `plan.md` from commands (count: 13→12); updated command descriptions with parallel agent info; updated Phase 0 descriptions
+- `references/diagrams-and-commands.md` — Command Catalog now documents agent invocations per command; added 3 new Command Design Principles for parallel execution
+
+**Breaking change:** `plan.md` command removed from spec — it never existed as a file. Use `plan-sprint.md` for sprint planning.
+
+---
+
+## v1.2.2 — 2026-03-23
+
 ## v1.2.1 — 2026-03-23
 
 ### C-Suite Agents

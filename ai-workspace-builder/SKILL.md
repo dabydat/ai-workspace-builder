@@ -81,8 +81,8 @@ Generate files in this EXACT order (dependencies first):
 
 ```
 Phase 0 — Settings (standalone, no dependencies):
-  settings.json (permissions, statusLine, spinnerTips, attribution, autocompact)
-  statusline-command.sh (colored status bar: model, tokens, git, context %)
+  settings.json (permissions, statusLine, spinnerTips, attribution, autocompact, hooks)
+  statusline-command.sh (model, agent name, turns, tokens, cost, git, context %, active file)
 
 Phase 1 — Foundation (no dependencies):
   .claudeignore
@@ -140,6 +140,8 @@ Phase 5 — Agents (reference rules + skills, include full frontmatter):
   agents/12-dx-engineer.md        (maxTurns: 10, color: cyan)
   agents/13-systems-analyst.md    (maxTurns: 15, color: cyan, skills: [business-analysis])
   agents/14-dba.md                (maxTurns: 15, color: blue, skills: [business-analysis])
+  agents/15-ceo.md                (maxTurns: 10, color: magenta)
+  agents/16-coo.md                (maxTurns: 10)
 
 Phase 6 — Stacks (referenced by dev agents):
   stacks/README.md
@@ -149,17 +151,16 @@ Phase 6 — Stacks (referenced by dev agents):
 Phase 7 — Commands (include model/argument-hint/disable-model-invocation):
   commands/start.md           (model: haiku — lightweight, saves tokens)
   commands/end.md             (model: haiku — lightweight, saves tokens)
-  commands/activate.md        (argument-hint: "[agent-name]")
-  commands/implement.md       (disable-model-invocation: true, argument-hint: "[spec-name]")
-  commands/create-spec.md     (argument-hint: "[name]")
-  commands/plan.md
-  commands/plan-sprint.md
-  commands/review.md          (argument-hint: "[file-path]")
-  commands/review-impact.md   (argument-hint: "[file-path]")
+  commands/activate.md        (argument-hint: "[agent-name]" — lists all 17 agents)
+  commands/implement.md       (disable-model-invocation: true, argument-hint: "[spec-name]" — parallel: architect+backend+frontend → qa)
+  commands/create-spec.md     (argument-hint: "[name]" — architect validates first)
+  commands/plan-sprint.md     (parallel: product-manager+project-manager → orchestrator)
+  commands/review.md          (argument-hint: "[file-path]" — qa-engineer agent)
+  commands/review-impact.md   (argument-hint: "[file-path]" — parallel: architect+qa-engineer)
   commands/build-graph.md
   commands/blast-radius.md    (argument-hint: "[target]")
   commands/setup-stack.md     (argument-hint: "[description]")
-  commands/create-docs.md     (argument-hint: "[project-name]")
+  commands/create-docs.md     (argument-hint: "[project-name]" — parallel: systems-analyst+dba)
 
 Phase 8 — Orchestration (references everything):
   prompts/CATALOG.md
@@ -210,6 +211,38 @@ Dev agents use `permissionMode: acceptEdits` to auto-accept file changes (reduce
 - **Skills** with `context: fork` run in isolated subagent context
 - Auto-invocation resolution: Skill (inline) > Agent (separate context) > Command (never auto-invoked)
 
+### Parallel Agent Execution (MANDATORY in commands)
+Commands MUST invoke agents via the Agent tool — not just give text instructions. The pattern:
+
+```markdown
+## Parallel agents (launch in a SINGLE response)
+**Agent 1 — Architect (background):**
+- subagent_type: `architect`
+- run_in_background: `true`
+- prompt: `"[specific task with file paths]"`
+
+**Agent 2 — Backend Dev (background):**
+- subagent_type: `backend-dev`
+- run_in_background: `true`
+- prompt: `"[specific task with file paths]"`
+
+Wait for both agents to complete, then proceed.
+```
+
+Rules:
+- Independent tasks → ALWAYS parallel (`run_in_background: true`)
+- Dependent tasks → sequential (wait, then invoke next agent)
+- Long-running builds/tests → always background
+- Integration/review after parallel work → foreground (`run_in_background: false`)
+- Each prompt must include exact file paths — agents don't share context
+
+Commands with parallel agents:
+- `/implement` → architect + backend-dev + frontend-dev parallel → qa-engineer sequential
+- `/plan-sprint` → product-manager + project-manager parallel → orchestrator sequential
+- `/review-impact` → architect (blast-radius) + qa-engineer parallel
+- `/create-docs` → systems-analyst + dba parallel (after scaffold)
+- `/create-spec` → architect sequential (validates before writing spec)
+
 ### Graph-Based Thinking
 Claude maintains 3 code graph diagrams (code-graph, code-deps, code-tests).
 These are mermaid files Claude reads/writes directly — no MCP server, no external tools.
@@ -233,13 +266,35 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 - `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "80"` compacts earlier (default ~95%)
 - Spinner tips override replaces generic tips with project-specific ones
 
-### Settings & Status Line
+### Settings, Hooks & Status Line
 `settings.json` provides team-shared configuration:
 - Git permissions: pull auto-allowed, push requires confirmation
 - GitHub CLI: read operations auto, write operations ask
-- Status line: colored bar showing model, tokens, git, context %
+- Status line: colored bar showing model, agent name, turn count, tokens, cost, git, context %, active file
 - Attribution: disabled by default (no Co-Authored-By on commits)
 - Spinner tips: 10 project-specific tips during operations
+- **Hooks:** `PreToolUse` on Read/Edit/Write writes active file path to `/tmp/.claude-active-file`
+
+**Hook for active file tracking (ALWAYS include in settings.json):**
+```json
+"hooks": {
+  "PreToolUse": [
+    {
+      "matcher": "Read|Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r \".file_path // .path // empty\" 2>/dev/null); [ -n \"$FILE\" ] && [ \"$FILE\" != \"null\" ] && printf \"{\\\"file\\\":\\\"%s\\\",\\\"ts\\\":%s}\" \"$FILE\" \"$(date +%s)\" > /tmp/.claude-active-file; exit 0'"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Status line shows (in order):** `Model [agent] t{turns} │ ↑in ↓out │ $cost │ folder │ branch status │ ctx% │ tool file/path`
+The `active file` segment only shows if the file was accessed within the last 30 seconds.
+Icon prefix: `r` = Read, `e` = Edit (yellow), `w` = Write (green).
 
 ### Sources
 - Design patterns: https://refactoring.guru/design-patterns/catalog
@@ -253,8 +308,9 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 
 ## Checklist Before Delivery
 
-- [ ] settings.json exists with permissions, statusLine, spinnerTips, attribution, autocompact
-- [ ] statusline-command.sh exists, is `chmod +x`, requires `jq`, shows model/tokens/cost/git/context
+- [ ] settings.json exists with permissions, statusLine, spinnerTips, attribution, autocompact, **and hooks**
+- [ ] settings.json hooks: PreToolUse on Read|Edit|Write → writes to /tmp/.claude-active-file
+- [ ] statusline-command.sh exists, is `chmod +x`, requires `jq`, shows model/agent/turns/tokens/cost/git/context/active-file
 - [ ] .claudeignore exists and covers node_modules, build, media, locks
 - [ ] memory/STATE.md has project name, stack, phase, goals
 - [ ] rules/self-management.md is present (auto-plan, auto-compact, auto-save)
@@ -262,7 +318,6 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 - [ ] Skills use directory format: skills/<name>/SKILL.md
 - [ ] All agents have full frontmatter: maxTurns, color, and skills (for dev agents: permissionMode)
 - [ ] Dev agent skills preloaded: architect→design-patterns, devs→refactoring-techniques, qa→code-quality, devops→deploy
-- [ ] Business analysis agents preloaded: systems-analyst→business-analysis, dba→business-analysis
 - [ ] CLAUDE.md has 11 rules (including rule 11: verify your work)
 - [ ] CLAUDE.md has `<important>` tags for critical rules (read-before-write, save state)
 - [ ] CLAUDE.md has Orchestration Pattern section (Command → Agent → Skill)
@@ -277,4 +332,7 @@ CLAUDE.md uses `<important>` tags to enforce critical rules that Claude must nev
 - [ ] stacks/active.md includes Naming Overrides section (stack-specific conventions)
 - [ ] If domain terminology exists, CLAUDE.md has a Domain Glossary section
 - [ ] README.md or GUIDE.md explains setup in under 2 minutes of reading
+- [ ] Commands with multi-agent tasks use Agent tool invocations (not just text instructions)
+- [ ] Parallel lanes identified: independent tasks use run_in_background=true
+- [ ] activate.md has complete and accurate agent list (all 17 agents)
 - [ ] All files copied to .claude/ (settings.json, agents/, skills/, commands/, statusline-command.sh)

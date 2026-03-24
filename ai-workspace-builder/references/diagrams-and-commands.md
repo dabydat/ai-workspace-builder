@@ -90,7 +90,7 @@ argument-hint: "[spec-name]"        # Optional: hint for expected arguments
 - `/setup-stack [description]` — Generate stacks/active.md with real code patterns. Save template copy. Create stack-specific skills/agents only if needed. Update STATE.md. Never touch universal config.
 
 **Planning:**
-- `/plan-sprint` — Launches `product-manager` + `project-manager` IN PARALLEL (background). Then `orchestrator` integrates outputs and produces gantt chart with agent swimlanes + parallel lanes.
+- `/plan-sprint` — 5-phase process: (1) context sweep, (2) launches `product-manager` + `project-manager` IN PARALLEL (background), (3) `orchestrator` integrates outputs into SPRINT.md with Gantt + parallel lanes, (4) creates `memory/sprints/sprint-{N}/{TID}-{slug}/story.md` + `seq.mermaid` for every task, (5) updates STATE.md. **Token Budget standard:** task table uses S/M/L effort (never days — days belong in Gantt only). Every `story.md` includes a `## Token Budget` line: `Effort: S|M|L | Max files to read: N | Brainstorm: skip|optional|yes | Approach: one-line strategy`. S/M/L rules: S → max 3–6 files, skip brainstorm, direct implementation; M → max 4–6 files, one planning step; L → max 8+ files, full PLAN→BRAINSTORM→EXECUTE. This is the token control mechanism — agents read their story.md before starting and constrain their own token spend accordingly.
 - `/create-spec [name]` — Invokes `architect` to validate pattern + file list. Then writes specs/[name]-spec.md + diagrams/[name].mermaid.
 
 **Implementation:**
@@ -115,3 +115,5 @@ argument-hint: "[spec-name]"        # Optional: hint for expected arguments
 - Independent tasks ALWAYS run in parallel — sequential execution is a bug, not a feature
 - Each agent prompt must include exact file paths — agents don't share conversation context
 - Commands use file references ("Read specs/$ARGUMENTS-spec.md"), never inline content
+- `/plan-sprint` creates per-task story.md files — agents read these BEFORE executing any task
+- Effort in sprint task tables = S/M/L only. Days appear only in Gantt charts. S/M/L = token budget signal.

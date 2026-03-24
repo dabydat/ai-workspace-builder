@@ -1,5 +1,32 @@
 # Changelog
 
+## v1.4.0 — 2026-03-24
+
+### Sprint Planning: Token Budget Standard + Per-Task Story Folders
+
+**Core change:** `/plan-sprint` now produces a complete sprint folder structure with one `story.md` (and `seq.mermaid` for flow tasks) per task. Each story embeds a `## Token Budget` line that agents read before executing — constraining their own file reads, brainstorming, and approach based on effort size.
+
+**Updated Command: `commands/plan-sprint.md`**
+- Added Phase 4: creates `memory/sprints/sprint-{N}/{TID}-{slug}/story.md` for every task using a standard template
+- `story.md` template includes `## Token Budget` section (one line) immediately after the task header
+- Added Phase 5: saves STATE.md (was previously Phase 4 with no folder creation)
+- Phase 3 orchestrator prompt now explicitly enforces S/M/L effort in task table (never days)
+- Explains the separation: **task table = S/M/L (token budget signal)**, **Gantt chart = calendar durations (scheduling)**
+- `seq.mermaid` created for all flow-based tasks (auth, CRUD, API, CI pipelines, multi-step sequences)
+
+**Token Budget standard (enforced in every sprint going forward):**
+- `S` → Max 3–6 files to read | Brainstorm: skip | Approach: direct implementation
+- `M` → Max 4–6 files to read | Brainstorm: skip | Approach: one planning step then implement
+- `L` → Max 8+ files to read | Brainstorm: yes | Approach: full PLAN → BRAINSTORM → EXECUTE
+
+**Why this matters:** Effort estimates were decorative before — they appeared in the task table but no agent read them. Now the story.md is the agent's context at task start, and the Token Budget line is the first thing the agent sees after the task header. S/M/L controls token spend at the point of execution, not just at planning time.
+
+**Updated documentation:**
+- `SKILL.md` — Phase 7: plan-sprint.md description updated; checklist: 3 new items enforcing S/M/L + Token Budget standard
+- `references/diagrams-and-commands.md` — /plan-sprint catalog entry rewritten with 5-phase description + Token Budget rules; 2 new Command Design Principles added
+
+---
+
 ## v1.3.0 — 2026-03-24
 
 ### Parallel Agent Execution + Hooks + Statusline Trace

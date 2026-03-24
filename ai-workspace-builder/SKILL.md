@@ -154,7 +154,7 @@ Phase 7 — Commands (include model/argument-hint/disable-model-invocation):
   commands/activate.md        (argument-hint: "[agent-name]" — lists all 17 agents)
   commands/implement.md       (disable-model-invocation: true, argument-hint: "[spec-name]" — parallel: architect+backend+frontend → qa)
   commands/create-spec.md     (argument-hint: "[name]" — architect validates first)
-  commands/plan-sprint.md     (parallel: product-manager+project-manager → orchestrator)
+  commands/plan-sprint.md     (parallel: product-manager+project-manager → orchestrator → sprint folder with story.md+seq.mermaid per task)
   commands/review.md          (argument-hint: "[file-path]" — qa-engineer agent)
   commands/review-impact.md   (argument-hint: "[file-path]" — parallel: architect+qa-engineer)
   commands/build-graph.md
@@ -336,3 +336,6 @@ Icon prefix: `r` = Read, `e` = Edit (yellow), `w` = Write (green).
 - [ ] Parallel lanes identified: independent tasks use run_in_background=true
 - [ ] activate.md has complete and accurate agent list (all 17 agents)
 - [ ] All files copied to .claude/ (settings.json, agents/, skills/, commands/, statusline-command.sh)
+- [ ] plan-sprint.md Phase 3 orchestrator prompt enforces S/M/L effort (not days) in task table
+- [ ] plan-sprint.md Phase 4 creates story.md per task using Token Budget template (S/M/L rules embedded)
+- [ ] Sprint task table effort column = S/M/L only. Days only in Gantt. This is non-negotiable — S/M/L is the token control signal agents read before starting.

@@ -41,7 +41,7 @@ Skipping this phase causes: scope creep, wrong data models, rework, missed requi
 ---
 name: systems-analyst
 description: Use this agent to gather business requirements, define actors and use cases, write user stories, create process flow diagrams, and produce sequence diagrams. Invoke before any development begins on a new feature or project.
-model: claude-sonnet-4-6
+model: sonnet
 tools: [Read, Write, Edit, Glob, Grep]
 maxTurns: 15
 color: cyan
@@ -64,7 +64,7 @@ color: cyan
 ---
 name: dba
 description: Use this agent to design database schemas, create ERDs, write SQL DDL, define indexes, write data dictionaries, and make data integrity decisions. Invoke after use cases define entities, before any backend development.
-model: claude-sonnet-4-6
+model: sonnet
 tools: [Read, Write, Edit, Glob, Grep]
 maxTurns: 15
 color: blue

@@ -219,7 +219,7 @@ pnpm-lock.yaml, package-lock.json, yarn.lock, poetry.lock
   "respectGitignore": true,
   "includeGitInstructions": true,
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60"
   },
   "permissions": {
     "allow": [
@@ -235,6 +235,21 @@ pnpm-lock.yaml, package-lock.json, yarn.lock, poetry.lock
       "Bash(git push *)", "Bash(git commit *)",
       "Bash(gh pr create *)", "Bash(gh issue create *)", "Bash(gh api *)",
       "Bash(npm publish *)", "Bash(rm *)", "Bash(rmdir *)"
+    ],
+    "read": {
+      "deny": [
+        "**/.env*",
+        "**/*.pem",
+        "**/*.key",
+        "**/secrets/**",
+        "**/credentials/**",
+        "**/.aws/**",
+        "**/.ssh/**"
+      ]
+    },
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force*)"
     ]
   },
   "attribution": { "commit": "", "pr": "" },
@@ -254,7 +269,7 @@ pnpm-lock.yaml, package-lock.json, yarn.lock, poetry.lock
 ```
 
 Key settings:
-- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "80"` — Compact earlier (default ~95%)
+- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "60"` — Compact earlier (default ~95%)
 - `git pull *` auto-allowed (safe), `git push *` requires confirmation (risky)
 - `gh` read operations auto-allowed, write operations require confirmation
 - `attribution` disabled — no Co-Authored-By on commits or PR footer

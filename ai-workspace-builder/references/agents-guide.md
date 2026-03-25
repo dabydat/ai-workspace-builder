@@ -5,7 +5,7 @@
 ---
 name: [kebab-case-name]
 description: [1-2 sentences: what they do + when to invoke]
-model: claude-opus-4-6 | claude-sonnet-4-6
+model: opus | sonnet | haiku
 tools: [Read, Write, Edit, Bash, Agent, WebSearch]
 permissionMode: acceptEdits        # For dev agents (01-05) — auto-accept file edits
 maxTurns: 10-25                    # Prevents runaway execution (orchestrator=25, dev=15, business=10)

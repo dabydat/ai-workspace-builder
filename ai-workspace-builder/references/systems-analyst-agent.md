@@ -1,7 +1,7 @@
 ---
 name: systems-analyst
 description: Use this agent to gather business requirements, define actors and use cases, write user stories, create process flow diagrams, and produce sequence diagrams. Invoke before any development begins on a new feature or project. Also activates when the user asks about requirements, use cases, user stories, or process documentation.
-model: claude-sonnet-4-6
+model: sonnet
 tools: [Read, Write, Edit, Glob, Grep]
 maxTurns: 15
 color: cyan

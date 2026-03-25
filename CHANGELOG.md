@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.5.0 — 2026-03-24
+
+### Command Flow Map + Documentation Sync
+
+**New: Command Flow Map section in README**
+- Added full lifecycle mermaid diagram showing how commands chain together (start → create-docs → plan-sprint → implement → review-impact → end)
+- Added Command Reference table with internal execution paths per command (agents invoked, input, output)
+- Added Command Pairing Examples for 4 common workflows (new project, building a feature, reviewing a change, closing a session)
+- Parallel agent lanes are visually highlighted in the diagram
+
+**Fixed: Documentation inconsistencies**
+- README slash command count corrected: 13 → 12 (`plan.md` was removed in v1.3.0 but README was never updated)
+- README version badge corrected: 1.2.0 → 1.5.0
+- README Changelog section now includes v1.3.0 and v1.4.0 entries (previously only showed through v1.2.0)
+
+---
+
 ## v1.4.0 — 2026-03-24
 
 ### Sprint Planning: Token Budget Standard + Per-Task Story Folders

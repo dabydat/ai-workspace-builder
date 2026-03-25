@@ -3,7 +3,7 @@
   <p align="center">
     <a href="https://buymeacoffee.com/daby"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-yellow?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white" alt="Buy Me a Coffee"></a>
     <img src="https://img.shields.io/badge/Claude_AI-Skill-blueviolet?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude AI Skill">
-    <img src="https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.5.0-blue?style=for-the-badge" alt="Version">
     <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">
   </p>
 </p>
@@ -22,7 +22,7 @@ The skill generates **80+ files** that turn Claude into a self-managing developm
 - **14 skills** — Including business-analysis templates (use cases, ERD, user stories, BPMN flows)
 - **6 rules** — Coding (SOLID + refactoring.guru), Testing, Design, Collaboration, Graph Thinking, Self-Management
 - **8 diagrams** — Mermaid graphs that replace text explanations (5× token savings)
-- **13 slash commands** — Including `/create-docs` to scaffold project documentation
+- **12 slash commands** — Including `/create-docs` to scaffold project documentation
 - **5 memory files** — Persistent state across sessions (Claude never forgets where it left off)
 - **Stack templates** — TypeScript, React, Python (or generate any stack with `/setup-stack`)
 - **docs/ folder** — Auto-generated business analysis documentation for every project
@@ -271,6 +271,99 @@ your-project/
 
 ---
 
+## Command Flow Map
+
+Every command has a defined internal execution path. This map shows how commands chain together in the project lifecycle, and what each one does internally.
+
+### Full Command Chain (recommended order)
+
+```mermaid
+graph TD
+    A["/start — read STATE.md"] --> B{Task type?}
+
+    B --> |"New project"| C["/create-docs — scaffold docs/"]
+    C --> C1["systems-analyst + dba IN PARALLEL"]
+    C1 --> D["/setup-stack — generate stacks/active.md"]
+    D --> E["/plan-sprint — sprint plan"]
+
+    B --> |"Continue sprint"| E
+
+    E --> E1["product-manager + project-manager IN PARALLEL"]
+    E1 --> E2["orchestrator → SPRINT.md + story.md per task"]
+    E2 --> F["/create-spec — write feature spec"]
+    F --> F1["architect validates pattern + file list"]
+    F1 --> F2["writes specs/name-spec.md + diagram"]
+    F2 --> G["/implement — build from spec"]
+
+    G --> G1["architect + backend-dev + frontend-dev IN PARALLEL"]
+    G1 --> G2["qa-engineer sequential — quality gate"]
+    G2 --> H["/build-graph — map codebase"]
+    H --> H1["writes code-graph + code-deps + code-tests mermaid"]
+
+    H1 --> I{Review needed?}
+    I --> |"Single file"| J["/review — code audit"]
+    J --> J1["qa-engineer: PASS/FAIL table vs coding.md"]
+    I --> |"Full impact"| K["/review-impact — blast radius + review"]
+    K --> K1["architect blast-radius + qa-engineer IN PARALLEL"]
+
+    J1 --> L["/blast-radius — trace dependencies"]
+    K1 --> L
+    L --> L1["reads 3 graph diagrams → direct/indirect impact"]
+
+    L1 --> M["/activate [agent] — switch role"]
+    M --> M1["devops / qa-engineer / ux-designer / etc."]
+    M1 --> N["/end — save state"]
+    N --> N1["updates STATE.md + CHANGELOG.md + DECISIONS.md"]
+
+    style A fill:#4A90D9,color:#fff
+    style N fill:#27AE60,color:#fff
+    style G1 fill:#F39C12,color:#fff
+    style E1 fill:#F39C12,color:#fff
+    style C1 fill:#F39C12,color:#fff
+    style K1 fill:#F39C12,color:#fff
+```
+
+### Command Reference — Internal Execution
+
+| Command | Input | Agents Invoked | Output |
+|---------|-------|----------------|--------|
+| `/start` | — | none (Haiku model) | 5-line status from STATE.md |
+| `/end` | — | none (Haiku model) | Updated STATE.md + CHANGELOG.md |
+| `/activate [agent]` | agent name | loads role into session | Active agent context |
+| `/setup-stack [desc]` | tech description | none | stacks/active.md with real patterns |
+| `/create-docs [name]` | project name | systems-analyst + dba **parallel** | docs/ with 9 BA files |
+| `/create-spec [name]` | spec name | architect **sequential** | specs/name-spec.md + diagram |
+| `/plan-sprint` | — | product-mgr + project-mgr **parallel** → orchestrator | SPRINT.md + story.md per task |
+| `/implement [spec]` | spec name | architect + backend + frontend **parallel** → qa **seq** | Working code + updated graphs |
+| `/review [file]` | file path | qa-engineer | PASS/FAIL table vs coding.md |
+| `/review-impact [file]` | file path | architect + qa-engineer **parallel** | Blast radius + quality report |
+| `/build-graph` | — | none | 3 mermaid diagrams of codebase |
+| `/blast-radius [target]` | function/file | none | Impact trace: direct → indirect → tests |
+
+### Command Pairing Examples
+
+**Starting a new project:**
+```
+/start → /create-docs my-app → /setup-stack → /plan-sprint
+```
+
+**Building a feature:**
+```
+/create-spec user-auth → /implement user-auth → /build-graph → /review-impact src/auth.ts
+```
+
+**Reviewing a risky change:**
+```
+/blast-radius src/auth.ts → /review-impact src/auth.ts → /activate qa-engineer
+```
+
+**Closing a session:**
+```
+/build-graph → /end
+```
+
+---
+
 ## How Self-Management Works
 
 | What Claude does automatically | When |
@@ -286,6 +379,32 @@ your-project/
 ---
 
 ## Changelog
+
+### v1.5.0 — Command Flow Map + Documentation Sync
+- Added Command Flow Map section with mermaid lifecycle diagram
+- Added Command Reference table with internal execution paths
+- Added Command Pairing Examples for common workflows
+- Fixed: slash command count 13 → 12 (`plan.md` was removed in v1.3.0)
+- Fixed: version badge now reflects current release
+
+### v1.4.0 — Sprint Token Budget Standard + Per-Task Story Folders
+- `/plan-sprint` now produces `memory/sprints/sprint-{N}/{TID}-{slug}/story.md` per task
+- Every `story.md` includes a `## Token Budget` line agents read before executing
+- Effort in sprint task tables: `S/M/L` only (never days — days belong in Gantt only)
+- `S/M/L` rules: S → max 3–6 files, skip brainstorm; M → one planning step; L → full PLAN→BRAINSTORM→EXECUTE
+- Added `seq.mermaid` per flow-based task (auth, CRUD, API, CI pipelines, multi-step sequences)
+- Updated `SKILL.md` checklist: 3 new items enforcing Token Budget standard
+
+### v1.3.0 — Parallel Agent Execution + Hooks + Statusline Trace
+- Commands now invoke agents via the `Agent` tool with `subagent_type` + `run_in_background`
+- `/implement` → architect + backend-dev + frontend-dev **in parallel** → qa-engineer sequential
+- `/plan-sprint` → product-manager + project-manager **in parallel** → orchestrator
+- `/review-impact` → architect (blast-radius) + qa-engineer **in parallel**
+- `/create-docs` → systems-analyst + dba **in parallel** after scaffold
+- Added `PreToolUse` hook: tracks active file in real time → shown in statusline
+- Upgraded `statusline-command.sh`: agent name, turn counter, active file, cost formatting, `│` separator
+- Removed `plan.md` command (never existed as a file — use `/plan-sprint`)
+- Updated `activate.md` with all 17 agents
 
 ### v1.2.0 — Business Analysis Layer
 - Added `agents/13-systems-analyst.md` — use cases, user stories, process flows, sequence diagrams
